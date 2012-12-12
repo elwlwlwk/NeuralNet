@@ -78,4 +78,27 @@ vector<double> CNeuralNet::Update(vector<double> inputs){
 }
 
 void CNeuralNet::Backpropagation(vector<vector<double>> InputSet, vector<vector<double>> ObjectSet){
+	vector<double> Input;
+	vector<double> Target;
+
+	for(int InputNumb=0; InputNumb< InputSet.size(); InputNumb++){
+		Input= InputSet.at(InputNumb);
+		Target= ObjectSet.at(InputNumb);
+
+		vector<double> Output= Update(Input);
+		vector<double> OutputError;
+		for(int OutputNumb=0; OutputNumb< Output.size(); OutputNumb++){
+			double Error= (Target.at(OutputNumb)- Output.at(OutputNumb))* Output.at(OutputNumb)* (1- Output.at(OutputNumb));
+			m_vecLayers.at(m_NumHiddenLayers+1).m_vecNeurons.at(OutputNumb).m_dError= Error;
+			OutputError.push_back(Error);
+		}
+
+		vector<vector<double>> HiddenError;
+		vector<double> HTempError;
+
+		/////////////////////////////
+		///////////TODO//////////////
+		/////////////////////////////
+
+	}
 }
