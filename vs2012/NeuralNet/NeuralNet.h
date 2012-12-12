@@ -39,11 +39,11 @@ public:
 	void CreateNet();
 	vector<double> GetWeights() const;
 	int GetNumberOfWeights() const;
-	void PutWeights(vector<double> &weigths);
+	void PutWeights(vector<double> weigths);
 
-	vector<double> Update(vector<double> &inputs);
+	vector<double> Update(vector<double> inputs);
 
-	void Backpropagation(vector<double> Input, vector<double> Object);
+	void Backpropagation(vector<vector<double>> InputSet, vector<vector<double>> ObjectSet);
 
 	void Training(vector<vector<double>> traningset, vector<vector<double>> outputset);
 

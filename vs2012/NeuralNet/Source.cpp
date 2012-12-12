@@ -1,161 +1,52 @@
 #include "NeuralNet.h"
 
 void main(){
-	CNeuralNet myNet(2, 1, 2, 2);
+	CNeuralNet myNet(2, 1, 4, 2);
 
 	vector<vector<double>> trainingset;
 	vector<vector<double>> outputset;
 
-	int Cleared= 0;
-	while(Cleared< 4){
-		Cleared= 0;
-		vector<double> input;
-		vector<double> destout;
-		input.push_back(0);
-		input.push_back(0);
-		destout.push_back(0);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(0);
-		input.push_back(0);
-		vector<double> output= myNet.Update(input);
-		
-		//printf("0, 0, %f\n", output[0]);
-		
-		input.clear();
-		destout.clear();
-		output.clear();
-		/////////////////////////////////////////////////////////////////
-		input.push_back(0);
-		input.push_back(1);
-		destout.push_back(1);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(0);
-		input.push_back(1);
-		output= myNet.Update(input);
+	vector<double> tset;
+	tset.push_back(0);
+	tset.push_back(0);
 
-		//printf("0, 1, %f\n", output[0]);
+	trainingset.push_back(tset);
 
-		input.clear();
-		destout.clear();
-		output.clear();
-		/////////////////////////////////////////////////////////////////
-		input.push_back(1);
-		input.push_back(0);
-		destout.push_back(1);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(1);
-		input.push_back(0);
-		output= myNet.Update(input);
+	tset.clear();
+	tset.push_back(0);
+	tset.push_back(1);
+	trainingset.push_back(tset);
 
-		//printf("1, 0, %f\n", output[0]);
+	tset.clear();
+	tset.push_back(1);
+	tset.push_back(0);
+	trainingset.push_back(tset);
 
-		input.clear();
-		destout.clear();
-		output.clear();
-		////////////////////////////////////////////////////////////////
-		input.push_back(1);
-		input.push_back(1);
-		destout.push_back(0);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(1);
-		input.push_back(1);
-		output= myNet.Update(input);
+	tset.clear();
+	tset.push_back(1);
+	tset.push_back(1);
+	trainingset.push_back(tset);
 
-		//printf("1, 1, %f\n", output[0]);
+	vector<double> dset;
+	dset.push_back(0);
+	outputset.push_back(dset);
+	dset.clear();
 
-		input.clear();
-		destout.clear();
-		output.clear();
+	dset.push_back(1);
+	outputset.push_back(dset);
+	dset.clear();
 
+	dset.push_back(1);
+	outputset.push_back(dset);
+	dset.clear();
 
-		//////////////////////////////////////////
-		//////////////////////////////////////////
-		input.push_back(0);
-		input.push_back(0);
-		output= myNet.Update(input);
-		printf("0, 0, %f\n", output[0]);
-		if(output[0]< 0.2){
-			//printf("0, 0, 0\n");
-			Cleared++;
-		}
-		input.clear();
-		destout.clear();
-		output.clear();
-		input.push_back(0);
-		input.push_back(1);
-		output= myNet.Update(input);
-		printf("0, 1, %f\n", output[0]);
-		if(output[0]>0.8){
-			//printf("0, 1, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		destout.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(0);
-		output= myNet.Update(input);
-		printf("1, 0, %f\n", output[0]);
-		if(output[0]>0.8){
-			//printf("1, 0, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		destout.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(1);
-		output= myNet.Update(input);
-		printf("1, 1, %f\n", output[0]);
-		if(output[0]< 0.2){
-			//printf("1, 1, 0\n");
-			Cleared++;
-		}
-		input.clear();
-		destout.clear();
-		output.clear();
+	dset.push_back(0);
+	outputset.push_back(dset);
+	dset.clear();
 
-	}
-	vector<double> input, output;
-	input.push_back(0);
-		input.push_back(0);
-		output= myNet.Update(input);
+	myNet.Backpropagation(trainingset, outputset);
 
-		if(output[0]< 0.2){
-			printf("0, 0, 0\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
-		input.push_back(0);
-		input.push_back(1);
-		output= myNet.Update(input);
-		if(output[0]>0.8){
-			printf("0, 1, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(0);
-		output= myNet.Update(input);
-		if(output[0]>0.8){
-			printf("1, 0, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(1);
-		output= myNet.Update(input);
-		if(output[0]< 0.2){
-			printf("1, 1, 0\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
+	printf("training end\n");
+
+	return;
 }
