@@ -11,6 +11,7 @@ SNeuron::SNeuron(int NumInputs):m_NumInputs(NumInputs+1){
 		//Sleep(1);
 #endif
 	}
+	m_dError= 0;
 }
 
 SNeuronLayer::SNeuronLayer(int NumNeuron, int NumInputsPerNeuron):m_NumNeurons(NumNeuron){
@@ -58,14 +59,19 @@ int CNeuralNet::GetNumberOfWeights() const{
 vector<double> CNeuralNet::Update(vector<double> inputs){
 	vector<double> outputs;
 
-	for(int i=0; i< m_NumHiddenLayers+2; i++){
+	for(int i=0; i< inputs.size(); i++){
+		double Temp= Sigmoid(inputs[i], M_SIGRESP);
+		m_vecLayers[0].m_vecNeurons[i].m_dActivation= Temp;
+		outputs.push_back(Temp);
+	}
+	for(int i=1; i< m_NumHiddenLayers+2; i++){
 		if(i!= 0){
 			inputs= outputs;
 			outputs.clear();
 		}
 		for(int j=0; j< m_vecLayers[i].m_NumNeurons; j++){
 			double netinput= 0;
-			for(int k=0; k< m_vecLayers[i].m_vecNeurons[j].m_NumInputs-1; k++){
+			for(int k=0; k< inputs.size(); k++){
 				netinput+= m_vecLayers[i].m_vecNeurons[j].m_vecWeight[k]* inputs[k];
 			}
 			netinput+= m_vecLayers[i].m_vecNeurons[j].m_vecWeight[m_vecLayers[i].m_vecNeurons[j].m_NumInputs-1]* M_BIAS;
@@ -80,32 +86,52 @@ vector<double> CNeuralNet::Update(vector<double> inputs){
 void CNeuralNet::Backpropagation(vector<vector<double>> InputSet, vector<vector<double>> ObjectSet){
 	vector<double> Input;
 	vector<double> Target;
-
-	for(int InputNumb=0; InputNumb< InputSet.size(); InputNumb++){
-		Input= InputSet.at(InputNumb);
-		Target= ObjectSet.at(InputNumb);
-
-		vector<double> Output= Update(Input);
-		vector<double> OutputError;
-		for(int OutputNumb=0; OutputNumb< Output.size(); OutputNumb++){
-			double Error= (Target.at(OutputNumb)- Output.at(OutputNumb))* Output.at(OutputNumb)* (1- Output.at(OutputNumb));
-			m_vecLayers.at(m_NumHiddenLayers+1).m_vecNeurons.at(OutputNumb).m_dError= Error;
-			OutputError.push_back(Error);
+	double PreError=0;
+	while(m_dErrorSum> M_ACERR){
+		printf("%f\n", m_dErrorSum);
+		if(PreError== m_dErrorSum){
+			printf("fuck");
 		}
+		PreError= m_dErrorSum;
+		m_dErrorSum= 0;
+		for(int InputNumb=0; InputNumb< InputSet.size(); InputNumb++){
+			Input= InputSet.at(InputNumb);
+			Target= ObjectSet.at(InputNumb);
 
-		for(int HiddenLevel= m_NumHiddenLayers; HiddenLevel> 0; HiddenLevel--){
-			for(int HiddenNumb= 0; HiddenNumb< m_vecLayers.at(HiddenLevel).m_NumNeurons; HiddenNumb++){
-				for(int OutputNumb= 0; OutputNumb< m_vecLayers.at(HiddenLevel+1).m_NumNeurons; OutputNumb++){
-					m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dError+=
-						m_vecLayers.at(HiddenLevel+1).m_vecNeurons.at(OutputNumb).m_dError* 
-						m_vecLayers.at(HiddenLevel+1).m_vecNeurons.at(OutputNumb).m_vecWeight.at(HiddenNumb)*
-						m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dActivation*
-						(1- m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dActivation);
+			vector<double> Output= Update(Input);
+			vector<double> OutputError;
+			for(int OutputNumb=0; OutputNumb< Output.size(); OutputNumb++){
+				double Error= (Target.at(OutputNumb)- Output.at(OutputNumb))* Output.at(OutputNumb)* (1- Output.at(OutputNumb));
+				m_vecLayers.at(m_NumHiddenLayers+1).m_vecNeurons.at(OutputNumb).m_dError= Error;
+				m_dErrorSum+= Error>0? Error: Error*(-1);
+				OutputError.push_back(Error);
+			}
+
+			for(int HiddenLevel= m_NumHiddenLayers; HiddenLevel> 0; HiddenLevel--){
+				for(int HiddenNumb= 0; HiddenNumb< m_vecLayers.at(HiddenLevel).m_NumNeurons; HiddenNumb++){
+					double TempError=0;
+					for(int OutputNumb= 0; OutputNumb< m_vecLayers.at(HiddenLevel+1).m_NumNeurons; OutputNumb++){
+							TempError+=
+							m_vecLayers.at(HiddenLevel+1).m_vecNeurons.at(OutputNumb).m_dError* 
+							m_vecLayers.at(HiddenLevel+1).m_vecNeurons.at(OutputNumb).m_vecWeight.at(HiddenNumb)*
+							m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dActivation*
+							(1- m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dActivation);
+					}
+					m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dError= TempError;
+				}
+			}
+
+			for(int LayerLevel= m_NumHiddenLayers+1; LayerLevel> 0; LayerLevel--){
+				for(int OutputNum=0; OutputNum< Output.size(); OutputNum++){
+					for(int vecNumb=0; vecNumb< m_vecLayers.at(LayerLevel).m_vecNeurons.at(OutputNum).m_vecWeight.size()-1; vecNumb++){
+						m_vecLayers.at(LayerLevel).m_vecNeurons.at(OutputNum).m_vecWeight.at(vecNumb)+= M_LEARNRATE* 
+							m_vecLayers.at(LayerLevel).m_vecNeurons.at(OutputNum).m_dError *
+							m_vecLayers.at(LayerLevel-1).m_vecNeurons.at(vecNumb).m_dActivation;
+					}
+					m_vecLayers.at(LayerLevel).m_vecNeurons.at(OutputNum).m_vecWeight.at(m_vecLayers.at(LayerLevel).m_vecNeurons.size()-1)+=
+						M_OFFSETLEARNRATE* m_vecLayers.at(LayerLevel).m_vecNeurons.at(OutputNum).m_dError;
 				}
 			}
 		}
-
-
-
 	}
 }

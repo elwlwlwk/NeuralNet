@@ -1,7 +1,7 @@
 #include "NeuralNet.h"
 
 void main(){
-	CNeuralNet myNet(2, 1, 4, 2);
+	CNeuralNet myNet(2, 1, 1, 2);
 
 	vector<vector<double>> trainingset;
 	vector<vector<double>> outputset;
@@ -47,6 +47,10 @@ void main(){
 	myNet.Backpropagation(trainingset, outputset);
 
 	printf("training end\n");
+
+	for(int i=0; i< trainingset.size(); i++){
+		printf("%f, %f, %f\n", trainingset[i][0], trainingset[i][1], myNet.Update(trainingset[i]).at(0));
+	}
 
 	return;
 }
