@@ -93,12 +93,19 @@ void CNeuralNet::Backpropagation(vector<vector<double>> InputSet, vector<vector<
 			OutputError.push_back(Error);
 		}
 
-		vector<vector<double>> HiddenError;
-		vector<double> HTempError;
+		for(int HiddenLevel= m_NumHiddenLayers; HiddenLevel> 0; HiddenLevel--){
+			for(int HiddenNumb= 0; HiddenNumb< m_vecLayers.at(HiddenLevel).m_NumNeurons; HiddenNumb++){
+				for(int OutputNumb= 0; OutputNumb< m_vecLayers.at(HiddenLevel+1).m_NumNeurons; OutputNumb++){
+					m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dError+=
+						m_vecLayers.at(HiddenLevel+1).m_vecNeurons.at(OutputNumb).m_dError* 
+						m_vecLayers.at(HiddenLevel+1).m_vecNeurons.at(OutputNumb).m_vecWeight.at(HiddenNumb)*
+						m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dActivation*
+						(1- m_vecLayers.at(HiddenLevel).m_vecNeurons.at(HiddenNumb).m_dActivation);
+				}
+			}
+		}
 
-		/////////////////////////////
-		///////////TODO//////////////
-		/////////////////////////////
+
 
 	}
 }
