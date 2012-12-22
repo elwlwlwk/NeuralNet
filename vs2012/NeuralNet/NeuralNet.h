@@ -3,6 +3,8 @@
 
 using namespace std;
 
+typedef vector<double> v_double;
+
 struct SNeuron{
 	int m_NumInputs;
 	vector<double> m_vecWeight;
@@ -43,8 +45,8 @@ public:
 
 	vector<double> Update(vector<double> inputs);
 
-	void Backpropagation(vector<vector<double>> InputSet, vector<vector<double>> ObjectSet);
+	void Backpropagation(vector<v_double> InputSet, vector<v_double> ObjectSet);
 
-	void Training(vector<vector<double>> traningset, vector<vector<double>> outputset);
+	void Training(vector<v_double> traningset, vector<v_double> outputset);
 
 };

@@ -38,11 +38,11 @@ void CNeuralNet::CreateNet(){
 	int t= time(NULL);
 	srand(t);
 	//create inputlayer
-	m_vecLayers.push_back(SNeuronLayer(m_NeuronsPerHiddenLyr, m_NumInputs));
+	m_vecLayers.push_back(SNeuronLayer(m_NumInputs, 1));
 	if(m_NumHiddenLayers> 0){
 		//create hiddenlayer
 		for(int i=0; i<m_NumHiddenLayers; i++){
-			m_vecLayers.push_back(SNeuronLayer(m_NeuronsPerHiddenLyr, m_NeuronsPerHiddenLyr));
+			m_vecLayers.push_back(SNeuronLayer(m_NeuronsPerHiddenLyr, m_vecLayers.at(i).m_vecNeurons.size()));
 		}
 	}
 	//create outputlayer
@@ -83,12 +83,12 @@ vector<double> CNeuralNet::Update(vector<double> inputs){
 	return outputs;
 }
 
-void CNeuralNet::Backpropagation(vector<vector<double>> InputSet, vector<vector<double>> ObjectSet){
+void CNeuralNet::Backpropagation(vector<v_double> InputSet, vector<v_double> ObjectSet){
 	vector<double> Input;
 	vector<double> Target;
 	double PreError=0;
 	while(m_dErrorSum> M_ACERR){
-		printf("%f\n", m_dErrorSum);
+		
 		if(PreError== m_dErrorSum){
 			printf("fuck");
 		}
@@ -133,5 +133,6 @@ void CNeuralNet::Backpropagation(vector<vector<double>> InputSet, vector<vector<
 				}
 			}
 		}
+//		printf("%f\n", m_dErrorSum);
 	}
 }
