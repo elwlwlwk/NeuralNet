@@ -38,10 +38,13 @@ private:
 public:
 	CNeuralNet();
 	CNeuralNet(int m_NumInputs, int m_NumOutputs, int m_NumHiddenLayers, int m_NeuronsPerHiddenLyr);
+	CNeuralNet(char* src);
 	void CreateNet();
 	vector<double> GetWeights() const;
 	int GetNumberOfWeights() const;
-	void PutWeights(vector<double> weigths);
+	void LoadWeights(char* src);
+	void SaveWeights(char* src);
+
 
 	vector<double> Update(vector<double> inputs);
 

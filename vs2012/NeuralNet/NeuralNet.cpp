@@ -33,6 +33,36 @@ CNeuralNet::CNeuralNet(int m_NumInputs, int m_NumOutputs, int m_NumHiddenLayers,
 	CreateNet();
 }
 
+CNeuralNet::CNeuralNet(char* src){
+	FILE* fp= fopen(src, "rt");
+	char Temp[100];
+	memset(Temp, 0, sizeof(Temp));
+	fgets(Temp, sizeof(Temp), fp);
+	this->m_NeuronsPerHiddenLyr= atoi(Temp);
+
+	memset(Temp, 0, sizeof(Temp));
+	fgets(Temp, sizeof(Temp), fp);
+	this->m_NumHiddenLayers= atoi(Temp);
+
+	memset(Temp, 0, sizeof(Temp));
+	fgets(Temp, sizeof(Temp), fp);
+	this->m_NumInputs= atoi(Temp);
+
+	memset(Temp, 0, sizeof(Temp));
+	fgets(Temp, sizeof(Temp), fp);
+	this->m_NumOutputs= atoi(Temp);
+
+	memset(Temp, 0, sizeof(Temp));
+	fgets(Temp, sizeof(Temp), fp);
+	this->m_dErrorSum= atof(Temp);
+
+
+	fclose(fp);
+
+	CreateNet();
+	LoadWeights(src);
+}
+
 
 void CNeuralNet::CreateNet(){
 	int t= time(NULL);
@@ -135,4 +165,52 @@ void CNeuralNet::Backpropagation(vector<v_double> InputSet, vector<v_double> Obj
 		}
 //		printf("%f\n", m_dErrorSum);
 	}
+}
+
+void CNeuralNet::LoadWeights(char* src){
+	int temp;
+	FILE* fp= fopen(src, "rt");
+
+	char Temp[100];
+
+	fgets(Temp, sizeof(Temp), fp);
+	fgets(Temp, sizeof(Temp), fp);
+	fgets(Temp, sizeof(Temp), fp);
+	fgets(Temp, sizeof(Temp), fp);
+	fgets(Temp, sizeof(Temp), fp);
+	
+	for(int i= 0; i< m_vecLayers.size(); i++){
+		for(int k=0; k< m_vecLayers.at(i).m_vecNeurons.size(); k++){
+			for(int m=0; m< m_vecLayers.at(i).m_vecNeurons.at(k).m_vecWeight.size(); m++){
+				memset(Temp, 0, sizeof(Temp));
+				fgets(Temp, sizeof(Temp), fp);
+				
+				m_vecLayers.at(i).m_vecNeurons.at(k).m_vecWeight.at(m)= atof(Temp);
+			}
+		}
+	}
+
+	fclose(fp);
+}
+
+void CNeuralNet::SaveWeights(char* src){
+
+	FILE* fp= fopen(src, "wt");
+
+	fprintf(fp, "%d\n", this->m_NeuronsPerHiddenLyr);
+	fprintf(fp, "%d\n", this->m_NumHiddenLayers);
+	fprintf(fp, "%d\n", this->m_NumInputs);
+	fprintf(fp, "%d\n", this->m_NumOutputs);
+	fprintf(fp, "%f\n", this->m_dErrorSum);
+
+	for(int i= 0; i< m_vecLayers.size(); i++){
+		for(int k=0; k< m_vecLayers.at(i).m_vecNeurons.size(); k++){
+			for(int m=0; m< m_vecLayers.at(i).m_vecNeurons.at(k).m_vecWeight.size(); m++){
+				fprintf(fp, "%f\n", m_vecLayers.at(i).m_vecNeurons.at(k).m_vecWeight.at(m));
+			}
+		}
+	}
+
+	fclose(fp);
+
 }

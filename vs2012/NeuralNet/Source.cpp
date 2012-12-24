@@ -102,7 +102,15 @@ void main(){
 	inputs.push_back(1);
 	inputs.push_back(1);
 	inputs.push_back(1);
-	printf("%f", myNet.Update(inputs).at(0));
+	printf("%f\n", myNet.Update(inputs).at(0));
+
+	myNet.SaveWeights("fuck.w");
+
+	CNeuralNet myNet2("fuck.w");
+	for(int i=0; i< trainingset.size(); i++){
+		printf("%f, %f, %f\n", trainingset[i][0], trainingset[i][1], myNet2.Update(trainingset[i]).at(0));
+	}
+
 
 	return;
 }
