@@ -1,3 +1,6 @@
+#ifndef __NEURALNET_H__
+#define __NEURALNET_H__
+
 #include <vector>
 #include "NeuralLib.h"
 
@@ -53,3 +56,5 @@ public:
 	void Training(vector<v_double> traningset, vector<v_double> outputset);
 
 };
+
+#endif

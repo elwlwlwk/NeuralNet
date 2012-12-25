@@ -118,13 +118,14 @@ void CNeuralNet::Backpropagation(vector<v_double> InputSet, vector<v_double> Obj
 	vector<double> Target;
 	double PreError=0;
 	while(m_dErrorSum> M_ACERR){
-		
 		if(PreError== m_dErrorSum){
 			printf("fuck");
 		}
 		PreError= m_dErrorSum;
 		m_dErrorSum= 0;
 		for(int InputNumb=0; InputNumb< InputSet.size(); InputNumb++){
+			Input.clear();
+			Target.clear();
 			Input= InputSet.at(InputNumb);
 			Target= ObjectSet.at(InputNumb);
 
@@ -163,7 +164,7 @@ void CNeuralNet::Backpropagation(vector<v_double> InputSet, vector<v_double> Obj
 				}
 			}
 		}
-//		printf("%f\n", m_dErrorSum);
+		printf("error: %f\n", m_dErrorSum);
 	}
 }
 
