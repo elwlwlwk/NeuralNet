@@ -1,3 +1,4 @@
+/*
 #include "NeuralNet.h"
 
 class CBrain{
@@ -11,4 +12,4 @@ public:
 
 	void Save();
 	void Load();
-};
+};*/

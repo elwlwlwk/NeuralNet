@@ -1,3 +1,4 @@
+/*
 #include "Brain.h"
 
 CBrain::CBrain(int columns, int m_NumInputs, int m_NumOutputs, int m_NumHiddenLayers, int m_NeuronsPerHiddenLyr){
@@ -43,3 +44,4 @@ void CBrain::Save(){
 
 void CBrain::Load(){
 }
+*/
