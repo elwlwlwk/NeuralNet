@@ -1,164 +1,199 @@
 #include "NeuralNet.h"
-#include <stdio.h>
+#include "ImageProc.h"
+#include "Brain.h"
 
-int main(){
-	CNeuralNet myNet(2, 1, 2, 2);
+void main(){
+	CBrain myBrain(5, 64, 1, 2, 64);
 
-	vector<v_double> trainingset;
-	vector<v_double> outputset;
+	vector<v_double> trainingset[5];
+	vector<v_double> outputset[5];
 
-	int Cleared= 0;
-	while(Cleared< 4){
-		Cleared= 0;
-		vector<double> input;
-		vector<double> destout;
-		input.push_back(0);
-		input.push_back(0);
-		destout.push_back(0);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(0);
-		input.push_back(0);
-		vector<double> output= myNet.Update(input);
-		
-		//printf("0, 0, %f\n", output[0]);
-		
-		input.clear();
-		destout.clear();
-		output.clear();
-		/////////////////////////////////////////////////////////////////
-		input.push_back(0);
-		input.push_back(1);
-		destout.push_back(1);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(0);
-		input.push_back(1);
-		output= myNet.Update(input);
+	vector<double> tset;
 
-		//printf("0, 1, %f\n", output[0]);
+	MyImage A("./trainingset/A.txt");
+	MyImage B("./trainingset/B.txt");
+	MyImage C("./trainingset/C.txt");
+	MyImage D("./trainingset/D.txt");
+	MyImage E("./trainingset/E.txt");
 
-		input.clear();
-		destout.clear();
-		output.clear();
-		/////////////////////////////////////////////////////////////////
-		input.push_back(1);
-		input.push_back(0);
-		destout.push_back(1);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(1);
-		input.push_back(0);
-		output= myNet.Update(input);
+	MyImage _A("./trainingset/_A.txt");
+	MyImage _B("./trainingset/_B.txt");
+	MyImage _C("./trainingset/_C.txt");
+	MyImage _D("./trainingset/_D.txt");
+	MyImage _E("./trainingset/_E.txt");
 
-		//printf("1, 0, %f\n", output[0]);
+	trainingset[0].push_back(A.Image);
+	outputset[0].push_back(A.Result);
+	trainingset[1].push_back(B.Image);
+	outputset[1].push_back(B.Result);
+	trainingset[2].push_back(C.Image);
+	outputset[2].push_back(C.Result);
+	trainingset[3].push_back(D.Image);
+	outputset[3].push_back(D.Result);
+	trainingset[4].push_back(E.Image);
+	outputset[4].push_back(E.Result);
 
-		input.clear();
-		destout.clear();
-		output.clear();
-		////////////////////////////////////////////////////////////////
-		input.push_back(1);
-		input.push_back(1);
-		destout.push_back(0);
-		
-		myNet.Backpropagation(input, destout);
-		input.push_back(1);
-		input.push_back(1);
-		output= myNet.Update(input);
+	trainingset[0].push_back(_A.Image);
+	outputset[0].push_back(_A.Result);
+	trainingset[1].push_back(_B.Image);
+	outputset[1].push_back(_B.Result);
+	trainingset[2].push_back(_C.Image);
+	outputset[2].push_back(_C.Result);
+	trainingset[3].push_back(_D.Image);
+	outputset[3].push_back(_D.Result);
+	trainingset[4].push_back(_E.Image);
+	outputset[4].push_back(_E.Result);
 
-		//printf("1, 1, %f\n", output[0]);
+	for(int i=0; i<5; i++){
+		myBrain.train(i, trainingset[i], outputset[i]);
+	}
+	
+	for(int i=0; i<5; i++){
+		printf("%d: ",i); 
+		printf("%d\n", myBrain.update(trainingset[i].at(0)));
+	}
 
-		input.clear();
-		destout.clear();
-		output.clear();
+	myBrain.Save();
 
+	while(1){
+		char str[100];
 
-		//////////////////////////////////////////
-		//////////////////////////////////////////
-		input.push_back(0);
-		input.push_back(0);
-		output= myNet.Update(input);
-		printf("0, 0, %f\n", output[0]);
-		if(output[0]< 0.2){
-			//printf("0, 0, 0\n");
-			Cleared++;
+		memset(str, 0, sizeof(str));
+		printf("input file name:");
+		scanf("%s", str);
+		MyImage MyImg(str);
+
+		vector<v_double> input;
+		input.push_back(MyImg.Image);
+
+		int out= myBrain.update(input.at(0));
+
+		switch(out){
+		case 0:
+			printf("A\n");
+			break;
+		case 1:
+			printf("B\n");
+			break;
+		case 2:
+			printf("C\n");
+			break;
+		case 3:
+			printf("D\n");
+			break;
+		case 4:
+			printf("E\n");
+			break;
 		}
-		input.clear();
-		destout.clear();
-		output.clear();
-		input.push_back(0);
-		input.push_back(1);
-		output= myNet.Update(input);
-		printf("0, 1, %f\n", output[0]);
-		if(output[0]>0.8){
-			//printf("0, 1, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		destout.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(0);
-		output= myNet.Update(input);
-		printf("1, 0, %f\n", output[0]);
-		if(output[0]>0.8){
-			//printf("1, 0, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		destout.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(1);
-		output= myNet.Update(input);
-		printf("1, 1, %f\n", output[0]);
-		if(output[0]< 0.2){
-			//printf("1, 1, 0\n");
-			Cleared++;
-		}
-		input.clear();
-		destout.clear();
-		output.clear();
 
 	}
-	vector<double> input, output;
-	input.push_back(0);
-		input.push_back(0);
-		output= myNet.Update(input);
 
-		if(output[0]< 0.2){
-			printf("0, 0, 0\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
-		input.push_back(0);
-		input.push_back(1);
-		output= myNet.Update(input);
-		if(output[0]>0.8){
-			printf("0, 1, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(0);
-		output= myNet.Update(input);
-		if(output[0]>0.8){
-			printf("1, 0, 1\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
-		input.push_back(1);
-		input.push_back(1);
-		output= myNet.Update(input);
-		if(output[0]< 0.2){
-			printf("1, 1, 0\n");
-			Cleared++;
-		}
-		input.clear();
-		output.clear();
-
-	return 0;
+	return;
 }
+
+/*
+	tset.push_back(0);
+	tset.push_back(0);
+	tset.push_back(0);
+
+
+	trainingset.push_back(tset);
+
+	tset.clear();
+	tset.push_back(0);
+	tset.push_back(0);
+	tset.push_back(1);
+	trainingset.push_back(tset);
+
+	tset.clear();
+	tset.push_back(0);
+	tset.push_back(1);
+	tset.push_back(0);
+	trainingset.push_back(tset);
+
+	tset.clear();
+	tset.push_back(0);
+	tset.push_back(1);
+	tset.push_back(1);
+	trainingset.push_back(tset);
+
+	tset.clear();
+	tset.push_back(1);
+	tset.push_back(0);
+	tset.push_back(0);
+	trainingset.push_back(tset);
+	
+	tset.clear();
+	tset.push_back(1);
+	tset.push_back(0);
+	tset.push_back(1);
+	trainingset.push_back(tset);
+	
+	tset.clear();
+	tset.push_back(1);
+	tset.push_back(1);
+	tset.push_back(0);
+	trainingset.push_back(tset);
+	
+	tset.clear();
+	tset.push_back(1);
+	tset.push_back(1);
+	tset.push_back(1);
+	trainingset.push_back(tset);
+	
+	vector<double> dset;
+
+	dset.push_back(1);
+	outputset.push_back(dset);
+	dset.clear();
+
+	dset.push_back(0);
+	outputset.push_back(dset);
+	dset.clear();
+
+	dset.push_back(1);
+	outputset.push_back(dset);
+	dset.clear();
+
+	dset.push_back(0);
+	outputset.push_back(dset);
+	dset.clear();
+
+	dset.push_back(1);
+	outputset.push_back(dset);
+	dset.clear();
+	
+	dset.push_back(0);
+	outputset.push_back(dset);
+	dset.clear();
+	
+	dset.push_back(1);
+	outputset.push_back(dset);
+	dset.clear();
+	
+	dset.push_back(1);
+	outputset.push_back(dset);
+	dset.clear();
+	
+	myNet.Backpropagation(trainingset, outputset);
+
+	printf("training end\n");
+
+	for(int i=0; i< trainingset.size(); i++){
+		printf("%f, %f, %f\n", trainingset[i][0], trainingset[i][1], myNet.Update(trainingset[i]).at(0));
+	}
+
+	vector<double> inputs;
+	inputs.push_back(1);
+	inputs.push_back(1);
+	inputs.push_back(1);
+	printf("%f\n", myNet.Update(inputs).at(0));
+
+	myNet.SaveWeights("fuck.w");
+
+	CNeuralNet myNet2("fuck.w");
+	for(int i=0; i< trainingset.size(); i++){
+		printf("%f, %f, %f\n", trainingset[i][0], trainingset[i][1], myNet2.Update(trainingset[i]).at(0));
+	}
+
+*/

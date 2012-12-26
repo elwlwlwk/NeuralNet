@@ -2,8 +2,8 @@
 
 double RandomClamped(){
 
-	int k= rand()%2000;
-	k-= 1000;
+	int k= rand()%1000;
+	k-= 500;
 	return (double)k/1000;
 }
 

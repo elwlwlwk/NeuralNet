@@ -79,12 +79,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Brain.cpp" />
     <ClCompile Include="ImageProc.cpp" />
     <ClCompile Include="NeuralLib.cpp" />
     <ClCompile Include="NeuralNet.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Brain.h" />
     <ClInclude Include="ImageProc.h" />
     <ClInclude Include="NeuralLib.h" />
     <ClInclude Include="NeuralNet.h" />
